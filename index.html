@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thamilselvan — Senior .NET Engineer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --ink: #0d0d0f;
+      --paper: #f5f2ed;
+      --cream: #ede9e1;
+      --rust: #c0392b;
+      --gold: #b8860b;
+      --slate: #4a5568;
+      --line: rgba(13,13,15,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 4rem;
+      background: rgba(245,242,237,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--slate);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--rust); }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 5rem;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 4rem 4rem 5rem;
+      position: relative;
+    }
+
+    .hero-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 1.6rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 5.5vw, 5.2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      opacity: 0;
+      animation: fadeUp 0.7s 0.35s forwards;
+    }
+
+    .hero-name span { color: var(--rust); }
+
+    .hero-divider {
+      width: 60px;
+      height: 3px;
+      background: var(--gold);
+      margin: 2rem 0;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s forwards;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--slate);
+      max-width: 420px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.65s forwards;
+    }
+
+    .hero-meta {
+      margin-top: 2.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.8s forwards;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--slate);
+    }
+
+    .meta-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--rust);
+      flex-shrink: 0;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.95s forwards;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2.2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1.5px solid var(--ink);
+      color: var(--ink);
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--ink);
+      transform: translateX(-101%);
+      transition: transform 0.25s ease;
+      z-index: -1;
+    }
+
+    .btn:hover { color: var(--paper); }
+    .btn:hover::before { transform: translateX(0); }
+
+    /* ─── HERO RIGHT — decorative panel ─── */
+    .hero-right {
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeIn 1s 0.4s forwards;
+    }
+
+    .hero-right::before {
+      content: '';
+      position: absolute;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+    }
+
+    .hero-right::after {
+      content: '';
+      position: absolute;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+    }
+
+    .hero-badge {
+      text-align: center;
+      color: var(--paper);
+      position: relative;
+      z-index: 2;
+    }
+
+    .badge-initial {
+      font-family: 'Playfair Display', serif;
+      font-size: 9rem;
+      font-weight: 900;
+      line-height: 1;
+      color: rgba(255,255,255,0.08);
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .badge-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .badge-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 0.5rem;
+    }
+
+    .badge-years {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .badge-years-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.4);
+      margin-top: 0.3rem;
+    }
+
+    /* ─── SECTIONS ─── */
+    section {
+      padding: 7rem 5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .section-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--rust);
+      letter-spacing: 0.1em;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .section-rule {
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+      margin-left: 1rem;
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      background: var(--cream);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: var(--slate);
+      margin-bottom: 1.2rem;
+    }
+
+    .about-text p:first-child {
+      font-size: 1.15rem;
+      color: var(--ink);
+      font-weight: 400;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .stat-card {
+      padding: 1.8rem;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      position: relative;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--rust);
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate);
+      margin-top: 0.4rem;
+    }
+
+    /* ─── SKILLS ─── */
+    #skills { background: var(--paper); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .skill-group {
+      border: 1px solid var(--line);
+      padding: 2rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .skill-group:hover { border-color: var(--rust); }
+
+    .skill-group-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 1.4rem;
+    }
+
+    .skill-tag {
+      display: inline-block;
+      padding: 0.4rem 0.9rem;
+      margin: 0.3rem 0.3rem 0 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.73rem;
+      background: var(--cream);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      transition: all 0.2s;
+    }
+
+    .skill-tag:hover {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    /* ─── EXPERIENCE ─── */
+    #experience { background: var(--cream); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 3rem;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .exp-item:last-child { border-bottom: none; }
+
+    .exp-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--slate);
+      letter-spacing: 0.05em;
+      padding-top: 0.2rem;
+    }
+
+    .exp-company {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+
+    .exp-role {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 1rem;
+    }
+
+    .exp-desc {
+      font-size: 0.93rem;
+      line-height: 1.8;
+      color: var(--slate);
+    }
+
+    .exp-tech {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .exp-tech span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      padding: 0.25rem 0.7rem;
+      border: 1px solid var(--line);
+      color: var(--slate);
+    }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      background: var(--ink);
+      color: var(--paper);
+      text-align: center;
+    }
+
+    #contact .section-title { color: var(--paper); }
+    #contact .section-num { color: var(--gold); }
+    #contact .section-rule { background: rgba(255,255,255,0.12); }
+
+    .contact-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      color: var(--paper);
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.2;
+    }
+
+    .contact-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 3rem;
+    }
+
+    .contact-details {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .contact-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .contact-value {
+      font-size: 0.95rem;
+      color: var(--paper);
+    }
+
+    .btn-light {
+      border-color: rgba(255,255,255,0.35);
+      color: var(--paper);
+    }
+
+    .btn-light::before { background: var(--paper); }
+    .btn-light:hover { color: var(--ink); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #080809;
+      padding: 2rem 5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    footer p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.08em;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      .nav-links { display: none; }
+      #hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 6rem 2rem 3rem; }
+      .hero-right { min-height: 300px; }
+      section { padding: 5rem 2rem; }
+      .about-grid, .skills-grid { grid-template-columns: 1fr; }
+      .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">T. Selvan</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-left">
+      <p class="hero-tag">Senior Software Engineer · .NET Domain</p>
+      <h1 class="hero-name">Thamil<span>selvan</span></h1>
+      <div class="hero-divider"></div>
+      <p class="hero-desc">
+        A seasoned .NET engineer crafting robust, scalable enterprise solutions. Passionate about clean architecture, performance engineering, and delivering software that stands the test of time.
+      </p>
+      <div class="hero-meta">
+        <div class="meta-item"><span class="meta-dot"></span> Aspire Systems India Pvt. Ltd.</div>
+        <div class="meta-item"><span class="meta-dot"></span> Bangalore, Karnataka, India</div>
+        <div class="meta-item"><span class="meta-dot"></span> .NET Technologies Specialist</div>
+      </div>
+      <div class="hero-cta">
+        <a href="#contact" class="btn">Get In Touch</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="badge-initial">T</div>
+      <div class="hero-badge">
+        <div class="badge-icon">⚙️</div>
+        <div class="badge-title">Years of Experience</div>
+        <div class="badge-years">Sr.</div>
+        <div class="badge-years-label">Senior Engineer · .NET Stack</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">About Me</h2>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>
+          I'm Thamilselvan, a Senior Software Engineer specializing in the Microsoft .NET ecosystem, currently building impactful solutions at Aspire Systems India Pvt. Ltd. in Bangalore.
+        </p>
+        <p>
+          With deep expertise across the .NET stack — from ASP.NET Core APIs to cloud-native microservices — I bring both technical precision and architectural thinking to every project I take on. My work spans enterprise backend systems, RESTful service design, and database optimization.
+        </p>
+        <p>
+          I thrive in collaborative Agile environments and am passionate about writing clean, maintainable code that solves real business problems. Outside of work, I continuously explore emerging technologies and best practices in the .NET ecosystem.
+        </p>
+      </div>
+
+      <div class="about-stats reveal">
+        <div class="stat-card">
+          <div class="stat-num">Sr.</div>
+          <div class="stat-label">Engineering Level</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">.NET</div>
+          <div class="stat-label">Core Stack</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">BLR</div>
+          <div class="stat-label">Based in Bangalore</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">Aspire</div>
+          <div class="stat-label">Current Employer</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Technical Skills</h2>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-group reveal">
+        <div class="skill-group-title">Core Platform</div>
+        <span class="skill-tag">.NET 6 / 7 / 8</span>
+        <span class="skill-tag">ASP.NET Core</span>
+        <span class="skill-tag">C#</span>
+        <span class="skill-tag">.NET Framework</span>
+        <span class="skill-tag">VB.NET</span>
+        <span class="skill-tag">LINQ</span>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title">Web & APIs</div>
+        <span class="skill-tag">Web API</span>
+        <span class="skill-tag">REST</span>
+        <span class="skill-tag">Minimal APIs</span>
+        <span class="skill-tag">gRPC</span>
+        <span class="skill-tag">SignalR</span>
+        <span class="skill-tag">MVC</span>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title">Data & ORM</div>
+        <span class="skill-tag">Entity Framework Core</span>
+        <span class="skill-tag">Dapper</span>
+        <span class="skill-tag">SQL Server</span>
+        <span class="skill-tag">PostgreSQL</span>
+        <span class="skill-tag">T-SQL</span>
+        <span class="skill-tag">Redis</span>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title">Architecture</div>
+        <span class="skill-tag">Microservices</span>
+        <span class="skill-tag">Clean Architecture</span>
+        <span class="skill-tag">CQRS</span>
+        <span class="skill-tag">Domain-Driven Design</span>
+        <span class="skill-tag">SOLID Principles</span>
+        <span class="skill-tag">Design Patterns</span>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title">Cloud & DevOps</div>
+        <span class="skill-tag">Microsoft Azure</span>
+        <span class="skill-tag">Docker</span>
+        <span class="skill-tag">Kubernetes</span>
+        <span class="skill-tag">Azure DevOps</span>
+        <span class="skill-tag">CI/CD Pipelines</span>
+        <span class="skill-tag">Git</span>
+      </div>
+
+      <div class="skill-group reveal">
+        <div class="skill-group-title">Testing & Tools</div>
+        <span class="skill-tag">xUnit</span>
+        <span class="skill-tag">NUnit</span>
+        <span class="skill-tag">Moq</span>
+        <span class="skill-tag">Postman</span>
+        <span class="skill-tag">Swagger / OpenAPI</span>
+        <span class="skill-tag">Visual Studio</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Experience</h2>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date">Current Position<br/>Bangalore, India</div>
+      <div>
+        <div class="exp-company">Aspire Systems India Pvt. Ltd.</div>
+        <div class="exp-role">Senior Software Engineer</div>
+        <p class="exp-desc">
+          Leading backend development efforts on enterprise-grade .NET applications, designing and implementing scalable microservices and RESTful APIs. Collaborating closely with cross-functional teams to deliver high-quality software that meets complex client requirements. Mentoring junior engineers and driving code quality standards across the team.
+        </p>
+        <div class="exp-tech">
+          <span>.NET Core</span>
+          <span>ASP.NET Web API</span>
+          <span>SQL Server</span>
+          <span>Azure</span>
+          <span>Microservices</span>
+          <span>C#</span>
+          <span>Docker</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-date">Prior Experience<br/>India</div>
+      <div>
+        <div class="exp-company">Previous Roles</div>
+        <div class="exp-role">Software Engineer · .NET Stack</div>
+        <p class="exp-desc">
+          Progressed through successive engineering roles, building a strong foundation in .NET development. Contributed to full-lifecycle development of web applications, database design, and integration projects. Gained hands-on experience with enterprise patterns, Agile methodologies, and continuous improvement practices.
+        </p>
+        <div class="exp-tech">
+          <span>.NET Framework</span>
+          <span>MVC</span>
+          <span>Entity Framework</span>
+          <span>SQL Server</span>
+          <span>JavaScript</span>
+          <span>Agile / Scrum</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-header reveal" style="justify-content:center;">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Contact</h2>
+      <div class="section-rule"></div>
+    </div>
+
+    <h3 class="contact-headline reveal">Let's build something great together.</h3>
+    <p class="contact-sub reveal">OPEN TO COLLABORATIONS · SENIOR ROLES · CONSULTING</p>
+
+    <div class="contact-details reveal">
+      <div class="contact-item">
+        <span class="contact-label">Location</span>
+        <span class="contact-value">Bangalore, India</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-label">Company</span>
+        <span class="contact-value">Aspire Systems India Pvt. Ltd.</span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-label">Domain</span>
+        <span class="contact-value">.NET Technologies</span>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <a href="mailto:thamilselvan@example.com" class="btn btn-light">Say Hello</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Thamilselvan · Senior Software Engineer</p>
+    <p>Aspire Systems India Pvt. Ltd. · Bangalore</p>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
